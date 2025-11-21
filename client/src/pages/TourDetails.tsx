@@ -198,7 +198,7 @@ export default function TourDetails() {
             <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column: Image + Details */}
-                    <div className="lg:col-span-2 space-y-8">
+                    <div className="lg:col-span-2 space-y-4">
                         {/* ... (image and details) ... */}
                         <div className="space-y-4">
                             <img
@@ -208,7 +208,7 @@ export default function TourDetails() {
                             />
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-3">
                             <div>
                                 <h1 className="text-4xl font-bold text-gray-900 mb-2">{tour.name}</h1>
                                 <div className="flex items-center space-x-4 text-gray-600">
@@ -237,7 +237,7 @@ export default function TourDetails() {
 
                     {/* Right Column: Booking Card & Related Tours */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-8 space-y-8">
+                        <div className="sticky top-8 space-y-2">
                             <Card className="p-6 bg-white shadow-xl border-sky-100">
                                 <CardContent className="space-y-6 pt-6">
                                     <div className="flex justify-between items-center">
@@ -344,8 +344,8 @@ export default function TourDetails() {
                 </div>
 
                 {/* Comments Section */}
-                <div className="mt-16 lg:w-2/3">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-8">Reviews & Comments</h2>
+                <div className="lg:w-2/3">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Reviews & Comments</h2>
 
                     {/* Add Comment Form */}
                     {user && (
