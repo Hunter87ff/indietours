@@ -41,3 +41,55 @@ export const createComment = async (req: AuthRequest, res: Response) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+// @desc    Update a comment
+// @route   PUT /api/comments/:id
+// @access  Private
+export const updateComment = async (req: AuthRequest, res: Response) => {
+    try {
+        const comment = await Comment.findById(req.params.id);
+
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        // Check user ownership
+        if (comment.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({ message: 'User not authorized' });
+        }
+
+        const updatedComment = await Comment.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        ).populate('user', 'name');
+
+        res.status(200).json(updatedComment);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Delete a comment
+// @route   DELETE /api/comments/:id
+// @access  Private
+export const deleteComment = async (req: AuthRequest, res: Response) => {
+    try {
+        const comment = await Comment.findById(req.params.id);
+
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        // Check user ownership
+        if (comment.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({ message: 'User not authorized' });
+        }
+
+        await comment.deleteOne();
+
+        res.status(200).json({ id: req.params.id });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};

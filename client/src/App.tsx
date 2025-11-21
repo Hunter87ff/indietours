@@ -18,7 +18,7 @@ export default function App() {
             <Router>
                 <div className="min-h-screen bg-white flex flex-col">
                     <Navigation />
-                    <main className="flex-grow pt-16">
+                    <main className="grow pt-16">
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/tours" element={<AllTours />} />

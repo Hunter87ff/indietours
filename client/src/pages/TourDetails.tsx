@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { MapPin, Star, Users } from 'lucide-react';
+import { MapPin, Star, Users, Pencil, Trash2, X, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function TourDetails() {
@@ -16,6 +16,11 @@ export default function TourDetails() {
     const [headCount, setHeadCount] = useState(1);
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    // Edit state
+    const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+    const [editCommentText, setEditCommentText] = useState('');
+    const [editRating, setEditRating] = useState(5);
 
     useEffect(() => {
         const fetchTour = async () => {
@@ -104,6 +109,55 @@ export default function TourDetails() {
             }
         } catch (error) {
             console.error('Error posting comment:', error);
+        }
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        if (!confirm('Are you sure you want to delete this comment?')) return;
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
+            });
+
+            if (res.ok) {
+                setComments(comments.filter(c => c._id !== commentId));
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+        }
+    };
+
+    const startEditing = (comment: any) => {
+        setEditingCommentId(comment._id);
+        setEditCommentText(comment.text);
+        setEditRating(comment.rating);
+    };
+
+    const handleUpdateComment = async (commentId: string) => {
+        try {
+            const res = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.token}`
+                },
+                body: JSON.stringify({
+                    text: editCommentText,
+                    rating: editRating
+                })
+            });
+
+            if (res.ok) {
+                const updatedComment = await res.json();
+                setComments(comments.map(c => c._id === commentId ? updatedComment : c));
+                setEditingCommentId(null);
+            }
+        } catch (error) {
+            console.error('Error updating comment:', error);
         }
     };
 
@@ -227,23 +281,71 @@ export default function TourDetails() {
                         {comments.map((comment) => (
                             <Card key={comment._id}>
                                 <CardContent className="pt-6">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <h4 className="font-bold text-gray-900">{comment.user?.name || 'Anonymous'}</h4>
-                                            <div className="flex items-center mt-1">
-                                                {[...Array(5)].map((_, i) => (
-                                                    <Star
-                                                        key={i}
-                                                        className={`w-4 h-4 ${i < comment.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
-                                                    />
-                                                ))}
+                                    {editingCommentId === comment._id ? (
+                                        // Edit Mode
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex space-x-2">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <button
+                                                            key={star}
+                                                            type="button"
+                                                            onClick={() => setEditRating(star)}
+                                                            className={`focus:outline-none ${star <= editRating ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                        >
+                                                            <Star className="w-5 h-5 fill-current" />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                                <div className="flex space-x-2">
+                                                    <Button size="sm" variant="ghost" onClick={() => setEditingCommentId(null)}>
+                                                        <X className="w-4 h-4 mr-1" /> Cancel
+                                                    </Button>
+                                                    <Button size="sm" onClick={() => handleUpdateComment(comment._id)}>
+                                                        <Check className="w-4 h-4 mr-1" /> Save
+                                                    </Button>
+                                                </div>
                                             </div>
+                                            <Input
+                                                value={editCommentText}
+                                                onChange={(e) => setEditCommentText(e.target.value)}
+                                                className="w-full"
+                                            />
                                         </div>
-                                        <span className="text-sm text-gray-500">
-                                            {new Date(comment.createdAt).toLocaleDateString()}
-                                        </span>
-                                    </div>
-                                    <p className="text-gray-600">{comment.text}</p>
+                                    ) : (
+                                        // View Mode
+                                        <>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div>
+                                                    <h4 className="font-bold text-gray-900">{comment.user?.name || 'Anonymous'}</h4>
+                                                    <div className="flex items-center mt-1">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <Star
+                                                                key={i}
+                                                                className={`w-4 h-4 ${i < comment.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center space-x-4">
+                                                    <span className="text-sm text-gray-500">
+                                                        {new Date(comment.createdAt).toLocaleDateString()}
+                                                    </span>
+                                                    {user && (user._id === comment.user?._id || user._id === comment.user) && (
+                                                        <div className="flex space-x-1">
+                                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => startEditing(comment)}>
+                                                                <Pencil className="w-4 h-4 text-gray-500 hover:text-sky-600" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleDeleteComment(comment._id)}>
+                                                                <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-600" />
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <p className="text-gray-600">{comment.text}</p>
+                                        </>
+                                    )}
                                 </CardContent>
                             </Card>
                         ))}

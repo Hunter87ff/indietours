@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ interface TourCardProps {
 export default function TourCard({ tour }: TourCardProps) {
     const { user, login } = useAuth(); // login function updates the user state
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (user && user.wishlist) {
@@ -25,7 +26,8 @@ export default function TourCard({ tour }: TourCardProps) {
     }, [user, tour._id]);
 
     const toggleWishlist = async (e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent navigation if clicking the heart
+        e.preventDefault();
+        e.stopPropagation(); // Prevent navigation if clicking the heart
         if (!user) {
             alert('Please login to wishlist tours');
             return;
@@ -56,7 +58,10 @@ export default function TourCard({ tour }: TourCardProps) {
     };
 
     return (
-        <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
+        <Card
+            className="group overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col cursor-pointer"
+            onClick={() => navigate(`/tours/${tour._id}`)}
+        >
             <div className="relative h-48 overflow-hidden">
                 <img
                     src={tour.imageUrl || 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&h=300&fit=crop'}
@@ -96,11 +101,9 @@ export default function TourCard({ tour }: TourCardProps) {
                         <span className="text-xl font-bold text-sky-600">₹{tour.price}</span>
                         <span className="text-xs text-gray-500">/person</span>
                     </div>
-                    <Link to={`/tours/${tour._id}`} className="flex-shrink-0">
-                        <Button size="sm" className="bg-sky-500 hover:bg-sky-600 text-white px-6">
-                            Book Now
-                        </Button>
-                    </Link>
+                    <Button size="sm" className="bg-sky-500 hover:bg-sky-600 text-white px-6 flex-shrink-0">
+                        Book Now
+                    </Button>
                 </div>
             </CardContent>
         </Card>
