@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { MapPin, Star, Users, Pencil, Trash2, X, Check } from 'lucide-react';
+import { MapPin, Star, Users, Pencil, Trash2, X, Check, MoreVertical } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function TourDetails() {
@@ -21,6 +21,13 @@ export default function TourDetails() {
     const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
     const [editCommentText, setEditCommentText] = useState('');
     const [editRating, setEditRating] = useState(5);
+
+    // Menu state
+    const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // Related tours state
+    const [relatedTours, setRelatedTours] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchTour = async () => {
@@ -45,8 +52,21 @@ export default function TourDetails() {
             }
         };
 
+        const fetchRelatedTours = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/tours');
+                const data = await res.json();
+                // Filter out current tour and take 3 random or first 3
+                const filtered = data.filter((t: any) => t._id !== id).slice(0, 3);
+                setRelatedTours(filtered);
+            } catch (error) {
+                console.error('Error fetching related tours:', error);
+            }
+        };
+
         fetchTour();
         fetchComments();
+        fetchRelatedTours();
     }, [id]);
 
     const handleBooking = async () => {
@@ -125,6 +145,7 @@ export default function TourDetails() {
 
             if (res.ok) {
                 setComments(comments.filter(c => c._id !== commentId));
+                setActiveMenuId(null);
             }
         } catch (error) {
             console.error('Error deleting comment:', error);
@@ -135,6 +156,7 @@ export default function TourDetails() {
         setEditingCommentId(comment._id);
         setEditCommentText(comment.text);
         setEditRating(comment.rating);
+        setActiveMenuId(null);
     };
 
     const handleUpdateComment = async (commentId: string) => {
@@ -167,76 +189,115 @@ export default function TourDetails() {
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Image Section */}
-                    <div className="space-y-4">
-                        <img
-                            src={tour.imageUrl || 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&h=300&fit=crop'}
-                            alt={tour.name}
-                            className="w-full h-[400px] object-cover rounded-2xl shadow-lg"
-                        />
-                    </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Left Column: Image + Details */}
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* ... (image and details) ... */}
+                        <div className="space-y-4">
+                            <img
+                                src={tour.imageUrl || 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&h=300&fit=crop'}
+                                alt={tour.name}
+                                className="w-full h-[400px] object-cover rounded-2xl shadow-lg"
+                            />
+                        </div>
 
-                    {/* Details Section */}
-                    <div className="space-y-6">
-                        <div>
-                            <h1 className="text-4xl font-bold text-gray-900 mb-2">{tour.name}</h1>
-                            <div className="flex items-center space-x-4 text-gray-600">
-                                <div className="flex items-center">
-                                    <MapPin className="w-5 h-5 mr-1 text-sky-500" />
-                                    {tour.location}
-                                </div>
-                                <div className="flex items-center">
-                                    <Star className="w-5 h-5 mr-1 text-yellow-400 fill-yellow-400" />
-                                    4.8 (120 reviews)
+                        <div className="space-y-6">
+                            <div>
+                                <h1 className="text-4xl font-bold text-gray-900 mb-2">{tour.name}</h1>
+                                <div className="flex items-center space-x-4 text-gray-600">
+                                    <div className="flex items-center">
+                                        <MapPin className="w-5 h-5 mr-1 text-sky-500" />
+                                        {tour.location}
+                                    </div>
+                                    <div className="flex items-center">
+                                        <Star className="w-5 h-5 mr-1 text-yellow-400 fill-yellow-400" />
+                                        4.8 (120 reviews)
+                                    </div>
                                 </div>
                             </div>
+
+                            <div className="prose max-w-none text-gray-600">
+                                <p className="text-lg leading-relaxed">{tour.description}</p>
+                            </div>
                         </div>
+                    </div>
 
-                        <div className="prose max-w-none text-gray-600">
-                            <p>{tour.description}</p>
-                        </div>
+                    {/* Right Column: Booking Card & Related Tours */}
+                    <div className="lg:col-span-1">
+                        <div className="sticky top-8 space-y-8">
+                            <Card className="p-6 bg-white shadow-xl border-sky-100">
+                                <CardContent className="space-y-6 pt-6">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-2xl font-bold text-gray-900">₹{tour.price}</span>
+                                        <span className="text-gray-500">per person</span>
+                                    </div>
 
-                        <Card className="p-6 bg-white shadow-xl border-sky-100">
-                            <CardContent className="space-y-6 pt-6">
-                                <div className="flex justify-between items-center">
-                                    <span className="text-2xl font-bold text-gray-900">₹{tour.price}</span>
-                                    <span className="text-gray-500">per person</span>
-                                </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">Number of Travelers</label>
+                                        <div className="flex items-center space-x-4">
+                                            <Users className="w-5 h-5 text-gray-400" />
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={headCount}
+                                                onChange={(e) => setHeadCount(parseInt(e.target.value))}
+                                                className="w-full"
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-gray-700">Number of Travelers</label>
-                                    <div className="flex items-center space-x-4">
-                                        <Users className="w-5 h-5 text-gray-400" />
-                                        <Input
-                                            type="number"
-                                            min="1"
-                                            value={headCount}
-                                            onChange={(e) => setHeadCount(parseInt(e.target.value))}
-                                            className="w-full"
-                                        />
+                                    <div className="pt-4 border-t border-gray-100">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <span className="font-semibold text-gray-900">Total Price</span>
+                                            <span className="text-2xl font-bold text-sky-600">₹{tour.price * headCount}</span>
+                                        </div>
+                                        <Button
+                                            onClick={handleBooking}
+                                            className="w-full h-12 bg-sky-600 hover:bg-sky-700 text-white text-lg"
+                                        >
+                                            Book Now
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Related Tours List */}
+                            {relatedTours.length > 0 && (
+                                <div>
+                                    <h3 className="text-lg font-bold text-gray-900 mb-4">You Might Also Like</h3>
+                                    <div className="space-y-4">
+                                        {relatedTours.map((related) => (
+                                            <div
+                                                key={related._id}
+                                                className="group flex gap-4 bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100"
+                                                onClick={() => navigate(`/tours/${related._id}`)}
+                                            >
+                                                <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg">
+                                                    <img
+                                                        src={related.imageUrl || 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&h=300&fit=crop'}
+                                                        alt={related.name}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    />
+                                                </div>
+                                                <div className="flex flex-col justify-center">
+                                                    <h4 className="font-semibold text-gray-900 line-clamp-1 group-hover:text-sky-600 transition-colors">{related.name}</h4>
+                                                    <div className="flex items-center text-xs text-gray-500 mt-1">
+                                                        <MapPin className="w-3 h-3 mr-1" />
+                                                        {related.location}
+                                                    </div>
+                                                    <p className="text-sky-600 font-bold text-sm mt-1">₹{related.price}</p>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-
-                                <div className="pt-4 border-t border-gray-100">
-                                    <div className="flex justify-between items-center mb-4">
-                                        <span className="font-semibold text-gray-900">Total Price</span>
-                                        <span className="text-2xl font-bold text-sky-600">₹{tour.price * headCount}</span>
-                                    </div>
-                                    <Button
-                                        onClick={handleBooking}
-                                        className="w-full h-12 bg-sky-600 hover:bg-sky-700 text-white text-lg"
-                                    >
-                                        Book Now
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Comments Section */}
-                <div className="mt-16">
+                <div className="mt-16 lg:w-2/3">
                     <h2 className="text-2xl font-bold text-gray-900 mb-8">Reviews & Comments</h2>
 
                     {/* Add Comment Form */}
@@ -279,7 +340,7 @@ export default function TourDetails() {
                     {/* Comments List */}
                     <div className="space-y-6">
                         {comments.map((comment) => (
-                            <Card key={comment._id}>
+                            <Card key={comment._id} className="overflow-visible">
                                 <CardContent className="pt-6">
                                     {editingCommentId === comment._id ? (
                                         // Edit Mode
@@ -315,7 +376,7 @@ export default function TourDetails() {
                                     ) : (
                                         // View Mode
                                         <>
-                                            <div className="flex justify-between items-start mb-2">
+                                            <div className="flex justify-between items-start mb-2 relative">
                                                 <div>
                                                     <h4 className="font-bold text-gray-900">{comment.user?.name || 'Anonymous'}</h4>
                                                     <div className="flex items-center mt-1">
@@ -332,13 +393,42 @@ export default function TourDetails() {
                                                         {new Date(comment.createdAt).toLocaleDateString()}
                                                     </span>
                                                     {user && (user._id === comment.user?._id || user._id === comment.user) && (
-                                                        <div className="flex space-x-1">
-                                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => startEditing(comment)}>
-                                                                <Pencil className="w-4 h-4 text-gray-500 hover:text-sky-600" />
+                                                        <div className="relative">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setActiveMenuId(activeMenuId === comment._id ? null : comment._id);
+                                                                }}
+                                                            >
+                                                                <MoreVertical className="w-4 h-4 text-gray-500" />
                                                             </Button>
-                                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => handleDeleteComment(comment._id)}>
-                                                                <Trash2 className="w-4 h-4 text-gray-500 hover:text-red-600" />
-                                                            </Button>
+
+                                                            {activeMenuId === comment._id && (
+                                                                <div
+                                                                    ref={menuRef}
+                                                                    className="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10 animate-in fade-in zoom-in duration-200"
+                                                                >
+                                                                    <div className="py-1">
+                                                                        <button
+                                                                            onClick={() => startEditing(comment)}
+                                                                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                                        >
+                                                                            <Pencil className="w-4 h-4 mr-2" />
+                                                                            Edit
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => handleDeleteComment(comment._id)}
+                                                                            className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                                                                        >
+                                                                            <Trash2 className="w-4 h-4 mr-2" />
+                                                                            Delete
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     )}
                                                 </div>
