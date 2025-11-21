@@ -287,7 +287,7 @@ export default function Home() {
                         <Button size="lg" className="bg-white text-sky-600 hover:bg-gray-100">
                             Start Planning
                         </Button>
-                        <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-sky-600">
+                        <Button size="lg"  className="border-white text-white hover:bg-white hover:text-sky-600">
                             Download Brochure
                         </Button>
                     </div>
