@@ -19,6 +19,29 @@ export const createBooking = async (req: AuthRequest, res: Response) => {
             return res.status(404).json({ message: 'Tour not found' });
         }
 
+        // Check if user already has a booking for this tour
+        const existingBooking = await Booking.findOne({
+            user: req.user.id,
+            tour: tourId
+        });
+
+        if (existingBooking) {
+            return res.status(400).json({
+                message: 'You have already booked this tour. Please cancel your existing booking to book again.'
+            });
+        }
+
+        // Check if tour has enough capacity
+        const existingBookings = await Booking.find({ tour: tourId });
+        const currentBookings = existingBookings.reduce((sum, b) => sum + b.headCount, 0);
+        const spotsLeft = tour.maxCapacity - currentBookings;
+
+        if (headCount > spotsLeft) {
+            return res.status(400).json({
+                message: `Not enough spots available. Only ${spotsLeft} spot(s) left.`
+            });
+        }
+
         // Calculate total price
         const totalPrice = (tour.price || 0) * headCount;
 

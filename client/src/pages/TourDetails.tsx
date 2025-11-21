@@ -245,6 +245,37 @@ export default function TourDetails() {
                                         <span className="text-gray-500">per person</span>
                                     </div>
 
+                                    {/* Tour Start Date */}
+                                    {tour.startDate && (
+                                        <div className="bg-sky-50 p-3 rounded-lg">
+                                            <p className="text-sm text-gray-600">Tour Starts</p>
+                                            <p className="font-semibold text-gray-900">
+                                                {new Date(tour.startDate).toLocaleDateString(undefined, {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {/* Capacity Info */}
+                                    <div className="bg-gray-50 p-3 rounded-lg">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-gray-600">Available Spots</span>
+                                            <span className={`font-bold ${tour.spotsLeft <= 5 ? 'text-red-600' : 'text-green-600'}`}>
+                                                {tour.spotsLeft} / {tour.maxCapacity}
+                                            </span>
+                                        </div>
+                                        {tour.spotsLeft <= 5 && tour.spotsLeft > 0 && (
+                                            <p className="text-xs text-red-600 mt-1">Only {tour.spotsLeft} spots left!</p>
+                                        )}
+                                        {tour.spotsLeft === 0 && (
+                                            <p className="text-xs text-red-600 mt-1 font-semibold">Tour is fully booked</p>
+                                        )}
+                                    </div>
+
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-gray-700">Number of Travelers</label>
                                         <div className="flex items-center space-x-4">
@@ -252,9 +283,11 @@ export default function TourDetails() {
                                             <Input
                                                 type="number"
                                                 min="1"
+                                                max={tour.spotsLeft}
                                                 value={headCount}
                                                 onChange={(e) => setHeadCount(parseInt(e.target.value))}
                                                 className="w-full"
+                                                disabled={tour.spotsLeft === 0}
                                             />
                                         </div>
                                     </div>
@@ -266,7 +299,8 @@ export default function TourDetails() {
                                         </div>
                                         <Button
                                             onClick={handleBooking}
-                                            className="w-full h-12 bg-sky-600 hover:bg-sky-700 text-white text-lg"
+                                            className="w-full h-12 bg-sky-600 hover:bg-sky-700 text-white text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                            disabled={tour.spotsLeft === 0 || headCount > tour.spotsLeft}
                                         >
                                             Book Now
                                         </Button>

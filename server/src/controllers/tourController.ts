@@ -18,10 +18,17 @@ export const getTours = async (req: Request, res: Response) => {
                 : 0;
             const reviewCount = comments.length;
 
+            // Calculate current bookings and spots left
+            const bookings = await Booking.find({ tour: tour._id });
+            const currentBookings = bookings.reduce((sum, b) => sum + b.headCount, 0);
+            const spotsLeft = tour.maxCapacity - currentBookings;
+
             return {
                 ...tour.toObject(),
                 averageRating,
-                reviewCount
+                reviewCount,
+                currentBookings,
+                spotsLeft
             };
         }));
 
@@ -49,10 +56,17 @@ export const getTour = async (req: Request, res: Response) => {
             : 0;
         const reviewCount = comments.length;
 
+        // Calculate current bookings and spots left
+        const bookings = await Booking.find({ tour: tour._id });
+        const currentBookings = bookings.reduce((sum, b) => sum + b.headCount, 0);
+        const spotsLeft = tour.maxCapacity - currentBookings;
+
         res.status(200).json({
             ...tour.toObject(),
             averageRating,
-            reviewCount
+            reviewCount,
+            currentBookings,
+            spotsLeft
         });
     } catch (error: any) {
         res.status(500).json({ message: error.message });

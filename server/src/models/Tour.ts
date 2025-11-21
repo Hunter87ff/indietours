@@ -24,6 +24,15 @@ const tourSchema = new mongoose.Schema({
         type: String,
         default: 'no-photo.jpg',
     },
+    startDate: {
+        type: Date,
+        required: [true, 'Please add a start date'],
+    },
+    maxCapacity: {
+        type: Number,
+        required: [true, 'Please add maximum capacity'],
+        min: [1, 'Capacity must be at least 1'],
+    },
     createdAt: {
         type: Date,
         default: Date.now,

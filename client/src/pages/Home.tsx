@@ -2,14 +2,18 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Search, MapPin, Calendar, Users, Star, ChevronRight, Plane, Hotel, Camera, Shield } from 'lucide-react';
+import { Search, MapPin, Star, ChevronRight, Plane, Hotel, Camera, Shield, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TourCard from '@/components/TourCard';
 import { BACKEND_ENDPOINT } from '@/config';
 
 export default function Home() {
     const [tours, setTours] = useState<any[]>([]);
+    const [filteredTours, setFilteredTours] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+
+    // Search filter - only location
+    const [searchLocation, setSearchLocation] = useState('');
 
     useEffect(() => {
         const fetchTours = async () => {
@@ -17,6 +21,7 @@ export default function Home() {
                 const res = await fetch(`${BACKEND_ENDPOINT}/api/tours`);
                 const data = await res.json();
                 setTours(data);
+                setFilteredTours(data);
             } catch (error) {
                 console.error('Error fetching tours:', error);
             } finally {
@@ -26,6 +31,22 @@ export default function Home() {
 
         fetchTours();
     }, []);
+
+    const handleSearch = () => {
+        let filtered = [...tours];
+
+        // Filter by location
+        if (searchLocation.trim()) {
+            filtered = filtered.filter(tour =>
+                tour.location.toLowerCase().includes(searchLocation.toLowerCase()) ||
+                tour.name.toLowerCase().includes(searchLocation.toLowerCase())
+            );
+        }
+
+        setFilteredTours(filtered);
+        // Scroll to destinations section
+        document.getElementById('destinations')?.scrollIntoView({ behavior: 'smooth' });
+    };
 
     const services = [
         {
@@ -95,20 +116,21 @@ export default function Home() {
 
                     {/* Search Bar */}
                     <div className="bg-white rounded-2xl shadow-xl p-6 max-w-4xl mx-auto transform hover:scale-105 transition-transform duration-300">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div className="relative">
+                        <div className="flex gap-4">
+                            <div className="relative flex-1">
                                 <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                                <Input placeholder="Where to?" className="pl-10 border-gray-200 focus:border-sky-500" />
+                                <Input
+                                    placeholder="Search by location or tour name..."
+                                    className="pl-10 border-gray-200 focus:border-sky-500"
+                                    value={searchLocation}
+                                    onChange={(e) => setSearchLocation(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                />
                             </div>
-                            <div className="relative">
-                                <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                                <Input type="date" className="pl-10 border-gray-200 focus:border-sky-500" />
-                            </div>
-                            <div className="relative">
-                                <Users className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                                <Input placeholder="2 Travelers" className="pl-10 border-gray-200 focus:border-sky-500" />
-                            </div>
-                            <Button className="bg-sky-500 hover:bg-sky-600 text-white h-12">
+                            <Button
+                                className="bg-sky-500 hover:bg-sky-600 text-white h-12 px-8"
+                                onClick={handleSearch}
+                            >
                                 Search Tours
                             </Button>
                         </div>
@@ -135,17 +157,47 @@ export default function Home() {
             <section id="destinations" className="py-20 bg-gradient-to-b from-white to-sky-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-bold text-gray-900 mb-4">Popular Destinations</h2>
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                            {searchLocation ? 'Search Results' : 'Popular Destinations'}
+                        </h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Handpicked destinations that offer unforgettable experiences
+                            {searchLocation
+                                ? `Found ${filteredTours.length} tour${filteredTours.length !== 1 ? 's' : ''}`
+                                : 'Handpicked destinations that offer unforgettable experiences'
+                            }
                         </p>
+                        {searchLocation && (
+                            <Button
+                                variant="outline"
+                                className="mt-4"
+                                onClick={() => {
+                                    setSearchLocation('');
+                                    setFilteredTours(tours);
+                                }}
+                            >
+                                Clear Filters
+                            </Button>
+                        )}
                     </div>
 
                     {loading ? (
                         <div className="text-center">Loading tours...</div>
+                    ) : filteredTours.length === 0 ? (
+                        <div className="text-center py-12">
+                            <p className="text-xl text-gray-600">No tours found matching your criteria.</p>
+                            <Button
+                                className="mt-4 bg-sky-500 hover:bg-sky-600"
+                                onClick={() => {
+                                    setSearchLocation('');
+                                    setFilteredTours(tours);
+                                }}
+                            >
+                                View All Tours
+                            </Button>
+                        </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {tours.slice(0, 4).map((tour) => (
+                            {filteredTours.slice(0, 8).map((tour) => (
                                 <TourCard key={tour._id} tour={tour} />
                             ))}
                         </div>

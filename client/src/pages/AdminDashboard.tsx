@@ -19,7 +19,9 @@ export default function AdminDashboard() {
         description: '',
         price: '',
         location: '',
-        imageUrl: ''
+        imageUrl: '',
+        startDate: '',
+        maxCapacity: ''
     });
 
     useEffect(() => {
@@ -86,14 +88,16 @@ export default function AdminDashboard() {
             description: tour.description,
             price: tour.price,
             location: tour.location,
-            imageUrl: tour.imageUrl || ''
+            imageUrl: tour.imageUrl || '',
+            startDate: tour.startDate ? new Date(tour.startDate).toISOString().split('T')[0] : '',
+            maxCapacity: tour.maxCapacity || ''
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const resetForm = () => {
         setEditingId(null);
-        setTourForm({ name: '', description: '', price: '', location: '', imageUrl: '' });
+        setTourForm({ name: '', description: '', price: '', location: '', imageUrl: '', startDate: '', maxCapacity: '' });
     };
 
     const handleDeleteTour = async (id: string) => {
@@ -166,6 +170,23 @@ export default function AdminDashboard() {
                                             onChange={(e) => setTourForm({ ...tourForm, price: e.target.value })}
                                             required
                                         />
+                                        <Input
+                                            placeholder="Max Capacity"
+                                            type="number"
+                                            min="1"
+                                            value={tourForm.maxCapacity}
+                                            onChange={(e) => setTourForm({ ...tourForm, maxCapacity: e.target.value })}
+                                            required
+                                        />
+                                        <div className="flex flex-col">
+                                            <label className="text-sm text-gray-600 mb-1">Start Date</label>
+                                            <Input
+                                                type="date"
+                                                value={tourForm.startDate}
+                                                onChange={(e) => setTourForm({ ...tourForm, startDate: e.target.value })}
+                                                required
+                                            />
+                                        </div>
                                         <Input
                                             placeholder="Image URL"
                                             value={tourForm.imageUrl}
