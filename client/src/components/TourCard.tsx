@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Star, Heart } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useState, useEffect } from 'react';
+import { BACKEND_ENDPOINT } from '@/config';
 
 interface TourCardProps {
     tour: any;
@@ -34,7 +35,7 @@ export default function TourCard({ tour }: TourCardProps) {
         }
 
         try {
-            const res = await fetch(`http://localhost:5000/api/auth/wishlist/${tour._id}`, {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/auth/wishlist/${tour._id}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${user.token}`
@@ -85,10 +86,12 @@ export default function TourCard({ tour }: TourCardProps) {
                     <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 min-h-[3.5rem]" title={tour.name}>
                         {tour.name}
                     </h3>
-                    <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm text-gray-600">4.8</span>
-                    </div>
+                    {tour.reviewCount > 0 && (
+                        <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
+                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm text-gray-600">{tour.averageRating}</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex items-center text-gray-600 text-sm mb-4">

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
+import { BACKEND_ENDPOINT } from '@/config';
 
 export default function Register() {
     const [name, setName] = useState('');
@@ -18,7 +19,7 @@ export default function Register() {
         setError('');
 
         try {
-            const res = await fetch('http://localhost:5000/api/auth/register', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

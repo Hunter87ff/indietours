@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
+import { BACKEND_ENDPOINT } from '@/config';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function Login() {
         setError('');
 
         try {
-            const res = await fetch('http://localhost:5000/api/auth/login', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

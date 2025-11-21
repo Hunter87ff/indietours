@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/context/AuthContext';
 import TourCard from '@/components/TourCard';
 import { User, Mail, Shield, X, Calendar, Users, MapPin, Heart } from 'lucide-react';
+import { BACKEND_ENDPOINT } from '@/config';
 
 export default function Profile() {
     const [bookings, setBookings] = useState<any[]>([]);
@@ -31,7 +32,7 @@ export default function Profile() {
 
     const fetchUserProfile = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/auth/me', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/auth/me`, {
                 headers: {
                     'Authorization': `Bearer ${user?.token}`
                 }
@@ -48,7 +49,7 @@ export default function Profile() {
 
     const fetchMyBookings = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/bookings/mybookings', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/bookings/mybookings`, {
                 headers: {
                     'Authorization': `Bearer ${user?.token}`
                 }
@@ -68,7 +69,7 @@ export default function Profile() {
         setBookings(prev => prev.filter(b => b._id !== id));
 
         try {
-            const res = await fetch(`http://localhost:5000/api/bookings/${id}`, {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/bookings/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${user?.token}`
@@ -89,7 +90,7 @@ export default function Profile() {
     const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/auth/updatedetails', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/auth/updatedetails`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

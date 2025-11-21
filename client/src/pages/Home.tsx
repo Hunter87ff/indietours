@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Search, MapPin, Calendar, Users, Star, ChevronRight, Plane, Hotel, Camera, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import TourCard from '@/components/TourCard';
+import { BACKEND_ENDPOINT } from '@/config';
 
 export default function Home() {
     const [tours, setTours] = useState<any[]>([]);
@@ -13,7 +14,7 @@ export default function Home() {
     useEffect(() => {
         const fetchTours = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/tours');
+                const res = await fetch(`${BACKEND_ENDPOINT}/api/tours`);
                 const data = await res.json();
                 setTours(data);
             } catch (error) {

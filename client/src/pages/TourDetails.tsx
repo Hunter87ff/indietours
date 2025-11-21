@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { MapPin, Star, Users, Pencil, Trash2, X, Check, MoreVertical } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { BACKEND_ENDPOINT } from '@/config';
 
 export default function TourDetails() {
     const { id } = useParams<{ id: string }>();
@@ -32,7 +33,7 @@ export default function TourDetails() {
     useEffect(() => {
         const fetchTour = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/tours/${id}`);
+                const res = await fetch(`${BACKEND_ENDPOINT}/api/tours/${id}`);
                 const data = await res.json();
                 setTour(data);
             } catch (error) {
@@ -44,7 +45,7 @@ export default function TourDetails() {
 
         const fetchComments = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/comments/${id}`);
+                const res = await fetch(`${BACKEND_ENDPOINT}/api/comments/${id}`);
                 const data = await res.json();
                 setComments(data);
             } catch (error) {
@@ -54,7 +55,7 @@ export default function TourDetails() {
 
         const fetchRelatedTours = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/tours');
+                const res = await fetch(`${BACKEND_ENDPOINT}/api/tours`);
                 const data = await res.json();
                 // Filter out current tour and take 3 random or first 3
                 const filtered = data.filter((t: any) => t._id !== id).slice(0, 3);
@@ -76,7 +77,7 @@ export default function TourDetails() {
         }
 
         try {
-            const res = await fetch('http://localhost:5000/api/bookings', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/bookings`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ export default function TourDetails() {
         }
 
         try {
-            const res = await fetch(`http://localhost:5000/api/comments/${id}`, {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/comments/${id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ export default function TourDetails() {
         if (!confirm('Are you sure you want to delete this comment?')) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/comments/${commentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${user?.token}`
@@ -161,7 +162,7 @@ export default function TourDetails() {
 
     const handleUpdateComment = async (commentId: string) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/comments/${commentId}`, {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/comments/${commentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,6 +183,12 @@ export default function TourDetails() {
             console.error('Error updating comment:', error);
         }
     };
+
+    // Calculate average rating from comments
+    const averageRating = comments.length > 0
+        ? (comments.reduce((sum, comment) => sum + comment.rating, 0) / comments.length).toFixed(1)
+        : 0;
+    const reviewCount = comments.length;
 
     if (loading) return <div className="text-center py-20">Loading...</div>;
     if (!tour) return <div className="text-center py-20">Tour not found</div>;
@@ -211,7 +218,13 @@ export default function TourDetails() {
                                     </div>
                                     <div className="flex items-center">
                                         <Star className="w-5 h-5 mr-1 text-yellow-400 fill-yellow-400" />
-                                        4.8 (120 reviews)
+                                        {reviewCount > 0 ? (
+                                            <>
+                                                {averageRating} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+                                            </>
+                                        ) : (
+                                            <span className="text-gray-400">No reviews yet</span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -397,13 +410,13 @@ export default function TourDetails() {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                className="h-8 w-8 p-0 rounded-full hover:bg-gray-100"
+                                                                className="h-9 w-9 p-0 rounded-full hover:bg-gray-100"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     setActiveMenuId(activeMenuId === comment._id ? null : comment._id);
                                                                 }}
                                                             >
-                                                                <MoreVertical className="w-4 h-4 text-gray-500" />
+                                                                <MoreVertical className="w-5 h-5 text-gray-600 stroke-[2.5]" />
                                                             </Button>
 
                                                             {activeMenuId === comment._id && (

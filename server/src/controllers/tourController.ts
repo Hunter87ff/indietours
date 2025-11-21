@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Tour from '../models/Tour';
 import Booking from '../models/Booking';
+import Comment from '../models/Comment';
 
 // @desc    Get all tours
 // @route   GET /api/tours
@@ -8,7 +9,23 @@ import Booking from '../models/Booking';
 export const getTours = async (req: Request, res: Response) => {
     try {
         const tours = await Tour.find();
-        res.status(200).json(tours);
+
+        // Add rating info to each tour
+        const toursWithRatings = await Promise.all(tours.map(async (tour) => {
+            const comments = await Comment.find({ tour: tour._id });
+            const averageRating = comments.length > 0
+                ? Number((comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1))
+                : 0;
+            const reviewCount = comments.length;
+
+            return {
+                ...tour.toObject(),
+                averageRating,
+                reviewCount
+            };
+        }));
+
+        res.status(200).json(toursWithRatings);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -25,7 +42,18 @@ export const getTour = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Tour not found' });
         }
 
-        res.status(200).json(tour);
+        // Add rating info
+        const comments = await Comment.find({ tour: tour._id });
+        const averageRating = comments.length > 0
+            ? Number((comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1))
+            : 0;
+        const reviewCount = comments.length;
+
+        res.status(200).json({
+            ...tour.toObject(),
+            averageRating,
+            reviewCount
+        });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

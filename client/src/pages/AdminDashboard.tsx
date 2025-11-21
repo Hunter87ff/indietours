@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import { Trash2, Plus, Pencil, X } from 'lucide-react';
+import { BACKEND_ENDPOINT } from '@/config';
 
 export default function AdminDashboard() {
     const [tours, setTours] = useState<any[]>([]);
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
 
     const fetchTours = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/tours');
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/tours`);
             const data = await res.json();
             setTours(data);
         } catch (error) {
@@ -38,7 +39,7 @@ export default function AdminDashboard() {
 
     const fetchBookings = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/bookings', {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/bookings`, {
                 headers: {
                     'Authorization': `Bearer ${user?.token}`
                 }
@@ -54,8 +55,8 @@ export default function AdminDashboard() {
         e.preventDefault();
         try {
             const url = editingId
-                ? `http://localhost:5000/api/tours/${editingId}`
-                : 'http://localhost:5000/api/tours';
+                ? `${BACKEND_ENDPOINT}/api/tours/${editingId}`
+                : `${BACKEND_ENDPOINT}/api/tours`;
 
             const method = editingId ? 'PUT' : 'POST';
 
@@ -98,7 +99,7 @@ export default function AdminDashboard() {
     const handleDeleteTour = async (id: string) => {
         if (!confirm('Are you sure?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/tours/${id}`, {
+            const res = await fetch(`${BACKEND_ENDPOINT}/api/tours/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${user?.token}`

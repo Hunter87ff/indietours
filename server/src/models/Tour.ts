@@ -28,6 +28,17 @@ const tourSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+}, {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+});
+
+// Virtual for comments
+tourSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'tour',
+    justOne: false
 });
 
 export default mongoose.model('Tour', tourSchema);
