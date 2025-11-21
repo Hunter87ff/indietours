@@ -6,6 +6,7 @@ interface User {
     email: string;
     role: string;
     token: string;
+    wishlist?: any[];
 }
 
 interface AuthContextType {

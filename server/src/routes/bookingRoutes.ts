@@ -3,6 +3,7 @@ import {
     createBooking,
     getMyBookings,
     getBookings,
+    cancelBooking,
 } from '../controllers/bookingController';
 import { protect, authorize } from '../middleware/auth';
 
@@ -15,5 +16,6 @@ router.route('/')
     .get(authorize('admin'), getBookings);
 
 router.get('/mybookings', getMyBookings);
+router.delete('/:id', cancelBooking);
 
 export default router;

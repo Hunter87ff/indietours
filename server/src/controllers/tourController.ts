@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Tour from '../models/Tour';
+import Booking from '../models/Booking';
 
 // @desc    Get all tours
 // @route   GET /api/tours
@@ -72,6 +73,16 @@ export const deleteTour = async (req: Request, res: Response) => {
         if (!tour) {
             return res.status(404).json({ message: 'Tour not found' });
         }
+
+        // Delete associated bookings
+        await Booking.deleteMany({ tour: req.params.id });
+
+        // Remove from all wishlists
+        const User = (await import('../models/User')).default;
+        await User.updateMany(
+            { wishlist: req.params.id },
+            { $pull: { wishlist: req.params.id } }
+        );
 
         res.status(200).json({ id: req.params.id });
     } catch (error: any) {

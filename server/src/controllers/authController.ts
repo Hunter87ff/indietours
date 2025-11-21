@@ -78,8 +78,43 @@ export const login = async (req: Request, res: Response) => {
 // @access  Private
 export const getMe = async (req: any, res: Response) => {
     try {
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id).populate('wishlist');
         res.status(200).json(user);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Toggle wishlist item
+// @route   POST /api/auth/wishlist/:tourId
+// @access  Private
+export const toggleWishlist = async (req: any, res: Response) => {
+    try {
+        const user = await User.findById(req.user.id);
+        const tourId = req.params.tourId;
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if tour is already in wishlist
+        // @ts-ignore
+        const index = user.wishlist.indexOf(tourId);
+
+        if (index > -1) {
+            // Remove
+            user.wishlist.splice(index, 1);
+        } else {
+            // Add
+            // @ts-ignore
+            user.wishlist.push(tourId);
+        }
+
+        await user.save();
+
+        // Return updated wishlist
+        const updatedUser = await User.findById(req.user.id).populate('wishlist');
+        res.status(200).json(updatedUser?.wishlist);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

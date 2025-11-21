@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Profile() {
@@ -23,6 +24,24 @@ export default function Profile() {
             setBookings(data);
         } catch (error) {
             console.error('Error fetching bookings:', error);
+        }
+    };
+
+    const handleCancelBooking = async (id: string) => {
+        if (!confirm('Are you sure you want to cancel this booking?')) return;
+        try {
+            const res = await fetch(`http://localhost:5000/api/bookings/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${user?.token}`
+                }
+            });
+
+            if (res.ok) {
+                fetchMyBookings();
+            }
+        } catch (error) {
+            console.error('Error cancelling booking:', error);
         }
     };
 
@@ -52,6 +71,14 @@ export default function Profile() {
                                     <div className="text-right">
                                         <span className="text-2xl font-bold text-sky-600">${booking.totalPrice}</span>
                                         <p className="text-sm text-green-600 font-medium mt-1">Confirmed</p>
+                                        <Button
+                                            variant="destructive"
+                                            size="sm"
+                                            className="mt-4"
+                                            onClick={() => handleCancelBooking(booking._id)}
+                                        >
+                                            Cancel
+                                        </Button>
                                     </div>
                                 </div>
                             </CardContent>

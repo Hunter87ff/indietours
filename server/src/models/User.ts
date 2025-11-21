@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    wishlist: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Tour'
+    }]
 });
 
 // Encrypt password using bcrypt

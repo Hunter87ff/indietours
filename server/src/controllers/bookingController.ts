@@ -58,3 +58,26 @@ export const getBookings = async (req: Request, res: Response) => {
         res.status(500).json({ message: error.message });
     }
 };
+// @desc    Cancel booking
+// @route   DELETE /api/bookings/:id
+// @access  Private
+export const cancelBooking = async (req: AuthRequest, res: Response) => {
+    try {
+        const booking = await Booking.findById(req.params.id);
+
+        if (!booking) {
+            return res.status(404).json({ message: 'Booking not found' });
+        }
+
+        // Make sure user owns booking
+        if (booking.user.toString() !== req.user.id && req.user.role !== 'admin') {
+            return res.status(401).json({ message: 'User not authorized' });
+        }
+
+        await booking.deleteOne();
+
+        res.status(200).json({ id: req.params.id });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};

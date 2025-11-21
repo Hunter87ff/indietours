@@ -5,10 +5,27 @@ import connectDB from './config/db';
 import authRoutes from './routes/authRoutes';
 import tourRoutes from './routes/tourRoutes';
 import bookingRoutes from './routes/bookingRoutes';
+import commentRoutes from './routes/commentRoutes';
 
 dotenv.config();
 
-connectDB();
+connectDB().then(async () => {
+    try {
+        const User = (await import('./models/User')).default;
+        const adminExists = await User.findOne({ role: 'admin' });
+        if (!adminExists) {
+            await User.create({
+                name: 'admin',
+                email: 'admin@admin.com',
+                password: 'admin',
+                role: 'admin'
+            });
+            console.log('Default admin account created: admin@admin.com / admin');
+        }
+    } catch (error) {
+        console.error('Error creating default admin:', error);
+    }
+});
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/tours', tourRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Sample route
 app.get('/', (req: Request, res: Response) => {

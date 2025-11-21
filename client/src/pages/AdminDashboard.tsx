@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Pencil, X } from 'lucide-react';
 
 export default function AdminDashboard() {
     const [tours, setTours] = useState<any[]>([]);
@@ -11,8 +11,9 @@ export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState('tours');
     const { user } = useAuth();
 
-    // Form state for new tour
-    const [newTour, setNewTour] = useState({
+    // Form state for new/edit tour
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [tourForm, setTourForm] = useState({
         name: '',
         description: '',
         price: '',
@@ -49,26 +50,49 @@ export default function AdminDashboard() {
         }
     };
 
-    const handleCreateTour = async (e: React.FormEvent) => {
+    const handleSubmitTour = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/tours', {
-                method: 'POST',
+            const url = editingId
+                ? `http://localhost:5000/api/tours/${editingId}`
+                : 'http://localhost:5000/api/tours';
+
+            const method = editingId ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user?.token}`
                 },
-                body: JSON.stringify(newTour)
+                body: JSON.stringify(tourForm)
             });
 
             if (res.ok) {
                 fetchTours();
-                setNewTour({ name: '', description: '', price: '', location: '', imageUrl: '' });
-                alert('Tour created successfully');
+                resetForm();
+                alert(editingId ? 'Tour updated successfully' : 'Tour created successfully');
             }
         } catch (error) {
-            console.error('Error creating tour:', error);
+            console.error('Error saving tour:', error);
         }
+    };
+
+    const handleEditClick = (tour: any) => {
+        setEditingId(tour._id);
+        setTourForm({
+            name: tour.name,
+            description: tour.description,
+            price: tour.price,
+            location: tour.location,
+            imageUrl: tour.imageUrl || ''
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const resetForm = () => {
+        setEditingId(null);
+        setTourForm({ name: '', description: '', price: '', location: '', imageUrl: '' });
     };
 
     const handleDeleteTour = async (id: string) => {
@@ -83,6 +107,9 @@ export default function AdminDashboard() {
 
             if (res.ok) {
                 fetchTours();
+                if (editingId === id) {
+                    resetForm();
+                }
             }
         } catch (error) {
             console.error('Error deleting tour:', error);
@@ -111,48 +138,56 @@ export default function AdminDashboard() {
 
                 {activeTab === 'tours' ? (
                     <div className="space-y-8">
-                        {/* Create Tour Form */}
+                        {/* Create/Edit Tour Form */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Create New Tour</CardTitle>
+                                <CardTitle>{editingId ? 'Edit Tour' : 'Create New Tour'}</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <form onSubmit={handleCreateTour} className="space-y-4">
+                                <form onSubmit={handleSubmitTour} className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <Input
                                             placeholder="Tour Name"
-                                            value={newTour.name}
-                                            onChange={(e) => setNewTour({ ...newTour, name: e.target.value })}
+                                            value={tourForm.name}
+                                            onChange={(e) => setTourForm({ ...tourForm, name: e.target.value })}
                                             required
                                         />
                                         <Input
                                             placeholder="Location"
-                                            value={newTour.location}
-                                            onChange={(e) => setNewTour({ ...newTour, location: e.target.value })}
+                                            value={tourForm.location}
+                                            onChange={(e) => setTourForm({ ...tourForm, location: e.target.value })}
                                             required
                                         />
                                         <Input
                                             placeholder="Price"
                                             type="number"
-                                            value={newTour.price}
-                                            onChange={(e) => setNewTour({ ...newTour, price: e.target.value })}
+                                            value={tourForm.price}
+                                            onChange={(e) => setTourForm({ ...tourForm, price: e.target.value })}
                                             required
                                         />
                                         <Input
                                             placeholder="Image URL"
-                                            value={newTour.imageUrl}
-                                            onChange={(e) => setNewTour({ ...newTour, imageUrl: e.target.value })}
+                                            value={tourForm.imageUrl}
+                                            onChange={(e) => setTourForm({ ...tourForm, imageUrl: e.target.value })}
                                         />
                                     </div>
                                     <Input
                                         placeholder="Description"
-                                        value={newTour.description}
-                                        onChange={(e) => setNewTour({ ...newTour, description: e.target.value })}
+                                        value={tourForm.description}
+                                        onChange={(e) => setTourForm({ ...tourForm, description: e.target.value })}
                                         required
                                     />
-                                    <Button type="submit" className="w-full bg-sky-600 hover:bg-sky-700">
-                                        <Plus className="w-4 h-4 mr-2" /> Create Tour
-                                    </Button>
+                                    <div className="flex gap-2">
+                                        <Button type="submit" className="flex-1 bg-sky-600 hover:bg-sky-700">
+                                            {editingId ? <Pencil className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+                                            {editingId ? 'Update Tour' : 'Create Tour'}
+                                        </Button>
+                                        {editingId && (
+                                            <Button type="button" variant="outline" onClick={resetForm}>
+                                                <X className="w-4 h-4 mr-2" /> Cancel
+                                            </Button>
+                                        )}
+                                    </div>
                                 </form>
                             </CardContent>
                         </Card>
@@ -169,14 +204,24 @@ export default function AdminDashboard() {
                                     <CardContent className="p-4">
                                         <h3 className="font-bold text-lg mb-2">{tour.name}</h3>
                                         <p className="text-gray-600 mb-4">${tour.price}</p>
-                                        <Button
-                                            variant="destructive"
-                                            size="sm"
-                                            onClick={() => handleDeleteTour(tour._id)}
-                                            className="w-full"
-                                        >
-                                            <Trash2 className="w-4 h-4 mr-2" /> Delete
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => handleEditClick(tour)}
+                                                className="flex-1"
+                                            >
+                                                <Pencil className="w-4 h-4 mr-2" /> Edit
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                size="sm"
+                                                onClick={() => handleDeleteTour(tour._id)}
+                                                className="flex-1"
+                                            >
+                                                <Trash2 className="w-4 h-4 mr-2" /> Delete
+                                            </Button>
+                                        </div>
                                     </CardContent>
                                 </Card>
                             ))}

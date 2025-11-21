@@ -10,6 +10,9 @@ export default function TourDetails() {
     const { id } = useParams<{ id: string }>();
     const [tour, setTour] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [comments, setComments] = useState<any[]>([]);
+    const [newComment, setNewComment] = useState('');
+    const [rating, setRating] = useState(5);
     const [headCount, setHeadCount] = useState(1);
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -27,7 +30,18 @@ export default function TourDetails() {
             }
         };
 
+        const fetchComments = async () => {
+            try {
+                const res = await fetch(`http://localhost:5000/api/comments/${id}`);
+                const data = await res.json();
+                setComments(data);
+            } catch (error) {
+                console.error('Error fetching comments:', error);
+            }
+        };
+
         fetchTour();
+        fetchComments();
     }, [id]);
 
     const handleBooking = async () => {
@@ -59,6 +73,37 @@ export default function TourDetails() {
         } catch (error) {
             console.error('Error booking tour:', error);
             alert('Something went wrong');
+        }
+    };
+
+    const handleSubmitComment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) {
+            alert('Please login to comment');
+            return;
+        }
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/comments/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                    text: newComment,
+                    rating
+                })
+            });
+
+            if (res.ok) {
+                const comment = await res.json();
+                setComments([comment, ...comments]);
+                setNewComment('');
+                setRating(5);
+            }
+        } catch (error) {
+            console.error('Error posting comment:', error);
         }
     };
 
@@ -101,7 +146,7 @@ export default function TourDetails() {
                         <Card className="p-6 bg-white shadow-xl border-sky-100">
                             <CardContent className="space-y-6 pt-6">
                                 <div className="flex justify-between items-center">
-                                    <span className="text-2xl font-bold text-gray-900">${tour.price}</span>
+                                    <span className="text-2xl font-bold text-gray-900">₹{tour.price}</span>
                                     <span className="text-gray-500">per person</span>
                                 </div>
 
@@ -122,7 +167,7 @@ export default function TourDetails() {
                                 <div className="pt-4 border-t border-gray-100">
                                     <div className="flex justify-between items-center mb-4">
                                         <span className="font-semibold text-gray-900">Total Price</span>
-                                        <span className="text-2xl font-bold text-sky-600">${tour.price * headCount}</span>
+                                        <span className="text-2xl font-bold text-sky-600">₹{tour.price * headCount}</span>
                                     </div>
                                     <Button
                                         onClick={handleBooking}
@@ -133,6 +178,78 @@ export default function TourDetails() {
                                 </div>
                             </CardContent>
                         </Card>
+                    </div>
+                </div>
+
+                {/* Comments Section */}
+                <div className="mt-16">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-8">Reviews & Comments</h2>
+
+                    {/* Add Comment Form */}
+                    {user && (
+                        <Card className="mb-8">
+                            <CardContent className="pt-6">
+                                <form onSubmit={handleSubmitComment} className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                                        <div className="flex space-x-2">
+                                            {[1, 2, 3, 4, 5].map((star) => (
+                                                <button
+                                                    key={star}
+                                                    type="button"
+                                                    onClick={() => setRating(star)}
+                                                    className={`focus:outline-none ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                                                >
+                                                    <Star className="w-6 h-6 fill-current" />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Your Comment</label>
+                                        <Input
+                                            value={newComment}
+                                            onChange={(e) => setNewComment(e.target.value)}
+                                            placeholder="Share your experience..."
+                                            required
+                                        />
+                                    </div>
+                                    <Button type="submit" className="bg-sky-600 hover:bg-sky-700">
+                                        Post Review
+                                    </Button>
+                                </form>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Comments List */}
+                    <div className="space-y-6">
+                        {comments.map((comment) => (
+                            <Card key={comment._id}>
+                                <CardContent className="pt-6">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h4 className="font-bold text-gray-900">{comment.user?.name || 'Anonymous'}</h4>
+                                            <div className="flex items-center mt-1">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <Star
+                                                        key={i}
+                                                        className={`w-4 h-4 ${i < comment.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <span className="text-sm text-gray-500">
+                                            {new Date(comment.createdAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <p className="text-gray-600">{comment.text}</p>
+                                </CardContent>
+                            </Card>
+                        ))}
+                        {comments.length === 0 && (
+                            <p className="text-gray-500 text-center py-8">No reviews yet. Be the first to review!</p>
+                        )}
                     </div>
                 </div>
             </div>

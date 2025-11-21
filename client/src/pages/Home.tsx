@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Search, MapPin, Calendar, Users, Star, ChevronRight, Plane, Hotel, Camera, Shield, Heart } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, Star, ChevronRight, Plane, Hotel, Camera, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TourCard from '@/components/TourCard';
 
 export default function Home() {
     const [tours, setTours] = useState<any[]>([]);
@@ -144,57 +144,19 @@ export default function Home() {
                         <div className="text-center">Loading tours...</div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {tours.map((tour) => (
-                                <Card key={tour._id} className="group overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                                    <div className="relative">
-                                        <img
-                                            src={tour.imageUrl || 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&h=300&fit=crop'}
-                                            alt={tour.name}
-                                            className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                                        />
-                                        {tour.discount && (
-                                            <Badge className="absolute top-4 left-4 bg-red-500 text-white">
-                                                {tour.discount}
-                                            </Badge>
-                                        )}
-                                        <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                                            <Heart className="w-4 h-4 text-gray-600 hover:text-red-500" />
-                                        </button>
-                                    </div>
-                                    <CardContent className="p-4">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">{tour.name}</h3>
-                                            <div className="flex items-center space-x-1">
-                                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                                <span className="text-sm text-gray-600">4.8</span>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center text-gray-600 text-sm mb-3">
-                                            <MapPin className="w-4 h-4 mr-1" />
-                                            <span>{tour.location}</span>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <div>
-                                                <span className="text-2xl font-bold text-sky-600">${tour.price}</span>
-                                                <span className="text-sm text-gray-500"> /person</span>
-                                            </div>
-                                            <Link to={`/tours/${tour._id}`}>
-                                                <Button size="sm" className="bg-sky-500 hover:bg-sky-600 text-white">
-                                                    Book Now
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                            {tours.slice(0, 4).map((tour) => (
+                                <TourCard key={tour._id} tour={tour} />
                             ))}
                         </div>
                     )}
 
                     <div className="text-center mt-12">
-                        <Button variant="outline" className="border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white">
-                            View All Destinations
-                            <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
+                        <Link to="/tours">
+                            <Button variant="outline" className="border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white">
+                                View All Destinations
+                                <ChevronRight className="w-4 h-4 ml-2" />
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </section>
