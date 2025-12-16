@@ -2,16 +2,16 @@ import { Users, Globe, Award, Heart, MapPin, Clock, Shield, Star } from 'lucide-
 
 export default function AboutUs() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
+        <div className="min-h-screen bg-linear-to-b from-sky-50 to-white">
             {/* Hero Section */}
-            <section className="relative h-[60vh] bg-gradient-to-r from-sky-600 to-blue-700 overflow-hidden">
+            <section className="relative h-[60vh] bg-linear-to-r from-sky-600 to-blue-700 overflow-hidden">
                 <div className="absolute inset-0 bg-black/20"></div>
                 <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30"></div>
 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center text-center">
                     <div className="space-y-6 animate-fade-in">
                         <h1 className="text-5xl md:text-7xl font-bold text-white drop-shadow-lg">
-                            About TravelHub
+                            About indietours
                         </h1>
                         <p className="text-xl md:text-2xl text-sky-100 max-w-3xl mx-auto">
                             Crafting unforgettable journeys and creating memories that last a lifetime
@@ -27,7 +27,7 @@ export default function AboutUs() {
                         <div className="space-y-6">
                             <h2 className="text-4xl font-bold text-gray-900">Our Story</h2>
                             <p className="text-lg text-gray-600 leading-relaxed">
-                                Founded in 2020, TravelHub was born from a passion for exploration and a desire to make
+                                Founded in 2020, indietours was born from a passion for exploration and a desire to make
                                 world-class travel experiences accessible to everyone. What started as a small team of
                                 travel enthusiasts has grown into a trusted platform serving thousands of adventurers worldwide.
                             </p>
@@ -38,22 +38,22 @@ export default function AboutUs() {
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-gradient-to-br from-sky-500 to-blue-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform">
+                            <div className="bg-linear-to-br from-sky-500 to-blue-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform">
                                 <Globe className="w-12 h-12 mb-4" />
                                 <h3 className="text-3xl font-bold mb-2">150+</h3>
                                 <p className="text-sky-100">Destinations</p>
                             </div>
-                            <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform mt-8">
+                            <div className="bg-linear-to-br from-purple-500 to-pink-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform mt-8">
                                 <Users className="w-12 h-12 mb-4" />
                                 <h3 className="text-3xl font-bold mb-2">50K+</h3>
                                 <p className="text-purple-100">Happy Travelers</p>
                             </div>
-                            <div className="bg-gradient-to-br from-orange-500 to-red-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform">
+                            <div className="bg-linear-to-br from-orange-500 to-red-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform">
                                 <Award className="w-12 h-12 mb-4" />
                                 <h3 className="text-3xl font-bold mb-2">25+</h3>
                                 <p className="text-orange-100">Awards Won</p>
                             </div>
-                            <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform mt-8">
+                            <div className="bg-linear-to-br from-green-500 to-emerald-600 p-8 rounded-2xl text-white shadow-xl transform hover:scale-105 transition-transform mt-8">
                                 <Star className="w-12 h-12 mb-4" />
                                 <h3 className="text-3xl font-bold mb-2">4.9/5</h3>
                                 <p className="text-green-100">Average Rating</p>
@@ -121,7 +121,7 @@ export default function AboutUs() {
             <section className="py-20 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-12">
-                        <div className="bg-gradient-to-br from-sky-500 to-blue-600 p-12 rounded-3xl text-white shadow-2xl">
+                        <div className="bg-linear-to-br from-sky-500 to-blue-600 p-12 rounded-3xl text-white shadow-2xl">
                             <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mb-6">
                                 <Award className="w-10 h-10" />
                             </div>
@@ -133,7 +133,7 @@ export default function AboutUs() {
                             </p>
                         </div>
 
-                        <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-12 rounded-3xl text-white shadow-2xl">
+                        <div className="bg-linear-to-br from-purple-500 to-pink-600 p-12 rounded-3xl text-white shadow-2xl">
                             <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mb-6">
                                 <Globe className="w-10 h-10" />
                             </div>
@@ -152,7 +152,7 @@ export default function AboutUs() {
             <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose TravelHub?</h2>
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose indietours?</h2>
                         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
                             We go above and beyond to ensure your travel experience is nothing short of extraordinary
                         </p>
@@ -211,17 +211,17 @@ export default function AboutUs() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-sky-600 to-blue-700">
+            <section className="py-20 px-4 sm:px-6 lg:px-8 bg-linear-to-r from-sky-600 to-blue-700">
                 <div className="max-w-4xl mx-auto text-center">
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                         Ready to Start Your Adventure?
                     </h2>
                     <p className="text-xl text-sky-100 mb-8">
-                        Join thousands of travelers who have discovered the world with TravelHub
+                        Join thousands of travelers who have discovered the world with indietours
                     </p>
                     <a
                         href="/"
-                        className="inline-block bg-white text-sky-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-sky-50 transition-colors shadow-xl hover:shadow-2xl transform hover:scale-105 transition-transform"
+                        className="inline-block bg-white text-sky-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-sky-50 transition-colors shadow-xl hover:shadow-2xl transform hover:scale-105"
                     >
                         Explore Destinations
                     </a>

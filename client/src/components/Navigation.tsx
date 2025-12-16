@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Plane, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Navigation() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
+    const { user, } = useAuth();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -17,11 +16,6 @@ export default function Navigation() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
-    const handleLogout = () => {
-        logout();
-        navigate('/');
-    };
 
     return (
         <nav
@@ -32,7 +26,7 @@ export default function Navigation() {
                 {/* Logo */}
                 <Link to="/" className="flex items-center space-x-2">
                     <Plane className="w-8 h-8 text-sky-500" />
-                    <span className="text-2xl font-bold text-gray-900">TravelHub</span>
+                    <span className="text-2xl font-bold text-gray-900">IndieTours</span>
                 </Link>
 
                 {/* Desktop Navigation */}
@@ -53,20 +47,9 @@ export default function Navigation() {
                                     Dashboard
                                 </Link>
                             )}
-                            <Link
-                                to="/profile"
-                                className="flex items-center space-x-2 text-gray-700 hover:text-sky-500 transition-colors"
-                            >
-                                <User className="w-4 h-4" />
-                                <span>{user.name}</span>
+                            <Link to="/profile" className="text-gray-700 hover:text-sky-500 transition-colors p-2 rounded-lg hover:bg-gray-100">
+                                <User className="w-5 h-5" />
                             </Link>
-                            <Button
-                                onClick={handleLogout}
-                                variant="outline"
-                                className="border-sky-500 text-sky-500 hover:bg-sky-500 hover:text-white"
-                            >
-                                Logout
-                            </Button>
                         </>
                     ) : (
                         <>
@@ -74,9 +57,6 @@ export default function Navigation() {
                                 <Button variant="ghost" className="text-gray-700 hover:text-sky-500">
                                     Login
                                 </Button>
-                            </Link>
-                            <Link to="/register">
-                                <Button className="bg-sky-500 hover:bg-sky-600 text-white">Register</Button>
                             </Link>
                         </>
                     )}
@@ -122,17 +102,11 @@ export default function Navigation() {
                             >
                                 Profile
                             </Link>
-                            <Button onClick={handleLogout} className="w-full bg-sky-500 hover:bg-sky-600 text-white">
-                                Logout
-                            </Button>
                         </>
                     ) : (
                         <>
                             <Link to="/login" className="block py-2 text-gray-700 hover:text-sky-500 transition-colors">
                                 Login
-                            </Link>
-                            <Link to="/register">
-                                <Button className="w-full bg-sky-500 hover:bg-sky-600 text-white">Register</Button>
                             </Link>
                         </>
                     )}

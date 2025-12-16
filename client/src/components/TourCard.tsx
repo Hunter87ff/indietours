@@ -92,15 +92,15 @@ export default function TourCard({ tour }: TourCardProps) {
             </div>
 
             {/* Content Section */}
-            <CardContent className="p-4 flex flex-col flex-grow">
+            <CardContent className="p-4 flex flex-col grow">
                 {/* Tour Name - Reduced bottom margin */}
-                <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-2 min-h-[3.5rem]" title={tour.name}>
+                <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-2 min-h-14" title={tour.name}>
                     {tour.name}
                 </h3>
 
                 {/* Location - Reduced bottom margin */}
                 <div className="flex items-center text-gray-600 text-sm mb-2">
-                    <MapPin className="w-4 h-4 mr-1.5 flex-shrink-0 text-sky-500" />
+                    <MapPin className="w-4 h-4 mr-1.5 shrink-0 text-sky-500" />
                     <span className="truncate">{tour.location}</span>
                 </div>
 

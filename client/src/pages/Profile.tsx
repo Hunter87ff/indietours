@@ -2,14 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 import TourCard from '@/components/TourCard';
-import { User, Mail, Shield, X, Calendar, Users, MapPin, Heart } from 'lucide-react';
+import { User, Mail, Shield, X, Calendar, Users, MapPin, Heart, LogOut, Edit } from 'lucide-react';
 import { BACKEND_ENDPOINT } from '@/config';
 
 export default function Profile() {
     const [bookings, setBookings] = useState<any[]>([]);
-    const { user, login } = useAuth();
+    const { user, login, logout } = useAuth();
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -94,6 +95,11 @@ export default function Profile() {
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
     const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -121,195 +127,258 @@ export default function Profile() {
     const validWishlist = user?.wishlist?.filter((item: any) => item && typeof item === 'object' && item._id) || [];
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            {isLoading ? <h3>Loading...</h3> : (
-            <div className="max-w-7xl mx-auto">
-                {/* Profile Section */}
-                <div className="bg-white shadow rounded-lg p-6 mb-8">
-                    <div className="flex justify-between items-start">
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-900 mb-4">My Profile</h1>
-                            <div className="space-y-3">
-                                <div className="flex items-center text-gray-600">
-                                    <User className="w-5 h-5 mr-3" />
-                                    <span className="font-semibold w-20">Name:</span>
-                                    <span>{user?.name}</span>
+        <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+            {isLoading ? (
+                <div className="flex justify-center items-center min-h-[50vh]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                </div>
+            ) : (
+                <div className="max-w-7xl mx-auto">
+                    {/* Profile Section */}
+                    <Card className="p-8 shadow-xl border-0 bg-white/80 backdrop-blur-sm mb-12">
+                        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                            <div className="flex items-center mb-6 lg:mb-0">
+                                <div className="w-20 h-20 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mr-6">
+                                    <User className="w-10 h-10 text-white" />
                                 </div>
-                                <div className="flex items-center text-gray-600">
-                                    <Mail className="w-5 h-5 mr-3" />
-                                    <span className="font-semibold w-20">Email:</span>
-                                    <span>{user?.email}</span>
+                                <div>
+                                    <h1 className="text-4xl font-extrabold text-gray-900 mb-2">Welcome back, {user?.name}!</h1>
+                                    <p className="text-gray-600">Manage your account and view your bookings</p>
                                 </div>
-                                <div className="flex items-center text-gray-600">
-                                    <Shield className="w-5 h-5 mr-3" />
-                                    <span className="font-semibold w-20">Role:</span>
-                                    <span className="capitalize">{user?.role}</span>
+                            </div>
+                            <div className="flex space-x-4">
+                                <Button
+                                    onClick={() => setIsEditing(true)}
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2 rounded-lg transition duration-300 flex items-center"
+                                >
+                                    <Edit className="w-4 h-4 mr-2" />
+                                    Edit Profile
+                                </Button>
+                                <Button
+                                    onClick={handleLogout}
+                                    variant="outline"
+                                    className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold px-6 py-2 rounded-lg transition duration-300 flex items-center"
+                                >
+                                    <LogOut className="w-4 h-4 mr-2" />
+                                    Logout
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                            <div className="bg-linear-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
+                                <div className="flex items-center">
+                                    <Mail className="w-8 h-8 text-blue-600 mr-4" />
+                                    <div>
+                                        <p className="text-sm font-medium text-blue-600 uppercase tracking-wider">Email</p>
+                                        <p className="text-lg font-semibold text-gray-900">{user?.email}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-linear-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
+                                <div className="flex items-center">
+                                    <Shield className="w-8 h-8 text-green-600 mr-4" />
+                                    <div>
+                                        <p className="text-sm font-medium text-green-600 uppercase tracking-wider">Role</p>
+                                        <p className="text-lg font-semibold text-gray-900 capitalize">{user?.role}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-linear-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+                                <div className="flex items-center">
+                                    <Heart className="w-8 h-8 text-purple-600 mr-4" />
+                                    <div>
+                                        <p className="text-sm font-medium text-purple-600 uppercase tracking-wider">Wishlist</p>
+                                        <p className="text-lg font-semibold text-gray-900">{validWishlist.length} items</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
-                    </div>
-                </div>
+                    </Card>
 
                 {/* Edit Modal */}
                 {isEditing && (
-                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative animate-in fade-in zoom-in duration-200">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                        <Card className="w-full max-w-md p-8 shadow-2xl border-0 bg-white/95 backdrop-blur-sm relative animate-in fade-in zoom-in duration-300">
                             <button
                                 onClick={() => setIsEditing(false)}
-                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="w-6 h-6" />
                             </button>
 
-                            <h2 className="text-xl font-bold mb-6">Edit Profile</h2>
+                            <div className="text-center mb-6">
+                                <div className="w-16 h-16 bg-linear-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Edit className="w-8 h-8 text-white" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900">Edit Profile</h2>
+                                <p className="text-gray-600">Update your account information</p>
+                            </div>
 
-                            <form onSubmit={handleUpdateProfile} className="space-y-4">
+                            <form onSubmit={handleUpdateProfile} className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Name</label>
                                     <Input
                                         value={editForm.name}
                                         onChange={e => setEditForm({ ...editForm, name: e.target.value })}
                                         required
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                                     <Input
                                         type="email"
                                         value={editForm.email}
                                         onChange={e => setEditForm({ ...editForm, email: e.target.value })}
                                         required
+                                        className="w-full"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">New Password (optional)</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">New Password (optional)</label>
                                     <Input
                                         type="password"
                                         value={editForm.password}
                                         onChange={e => setEditForm({ ...editForm, password: e.target.value })}
                                         placeholder="Leave blank to keep current"
+                                        className="w-full"
                                     />
                                 </div>
 
-                                <div className="flex justify-end gap-3 mt-6">
-                                    <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <Button type="button" variant="outline" onClick={() => setIsEditing(false)} className="px-6">
                                         Cancel
                                     </Button>
-                                    <Button type="submit">
+                                    <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 px-6">
                                         Save Changes
                                     </Button>
                                 </div>
                             </form>
-                        </div>
+                        </Card>
                     </div>
                 )}
 
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">My Bookings</h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                    {bookings.map((booking) => (
-                        <div
-                            key={booking._id}
-                            className="group relative bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col sm:flex-row h-full cursor-pointer"
-                            onClick={() => navigate(`/tours/${booking.tour._id}`)}
-                        >
-                            {/* Image Section */}
-                            <div className="relative w-full sm:w-2/5 h-48 sm:h-full overflow-hidden">
-                                <img
-                                    src={booking.tour?.imageUrl || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=500&fit=crop'}
-                                    alt={booking.tour?.name}
-                                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                                />
-                                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:hidden" />
-                                <div className="absolute bottom-3 left-3 text-white sm:hidden">
-                                    <p className="font-bold text-lg">₹{booking.totalPrice}</p>
-                                </div>
-                            </div>
-
-                            {/* Content Section */}
-                            <div className="flex-1 p-6 flex flex-col justify-between relative">
-                                <div>
-                                    <div className="flex justify-between items-start mb-2">
-                                        <h3 className="text-xl font-bold text-gray-900 line-clamp-1 group-hover:text-sky-600 transition-colors" title={booking.tour?.name}>
-                                            {booking.tour?.name}
-                                        </h3>
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shrink-0 ml-2">
-                                            Confirmed
-                                        </span>
+                <div className="mb-12">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">My Bookings</h2>
+                    <Card className="bg-white/60 backdrop-blur-sm shadow-xl border-0 p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        {bookings.map((booking) => (
+                            <Card
+                                key={booking._id}
+                                className="group overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col cursor-pointer border-gray-200"
+                                onClick={() => navigate(`/tours/${booking.tour._id}`)}
+                            >
+                                {/* Image Section */}
+                                <div className="relative h-48 overflow-hidden">
+                                    <img
+                                        src={booking.tour?.imageUrl || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500&h=500&fit=crop'}
+                                        alt={booking.tour?.name}
+                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    />
+                                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:hidden" />
+                                    <div className="absolute bottom-3 left-3 text-white sm:hidden">
+                                        <p className="font-bold text-lg">₹{booking.totalPrice}</p>
                                     </div>
-
-                                    <div className="space-y-3 mt-4">
-                                        <div className="flex items-center text-gray-500 text-sm">
-                                            <Calendar className="w-4 h-4 mr-2 text-sky-500" />
-                                            {new Date(booking.bookingDate).toLocaleDateString(undefined, { dateStyle: 'long' })}
-                                        </div>
-                                        <div className="flex items-center text-gray-500 text-sm">
-                                            <Users className="w-4 h-4 mr-2 text-sky-500" />
-                                            {booking.headCount} Travelers
-                                        </div>
-                                        {booking.tour?.location && (
-                                            <div className="flex items-center text-gray-500 text-sm">
-                                                <MapPin className="w-4 h-4 mr-2 text-sky-500" />
-                                                {booking.tour.location}
-                                            </div>
-                                        )}
+                                    {/* Status Badge */}
+                                    <div className="absolute top-3 right-3 bg-green-500/90 backdrop-blur-sm rounded-lg px-2.5 py-1 shadow-md">
+                                        <span className="text-xs font-semibold text-white">Confirmed</span>
                                     </div>
                                 </div>
 
-                                <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-50">
-                                    <div className="hidden sm:block">
-                                        <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Total Price</p>
-                                        <p className="text-2xl font-bold text-sky-600">₹{booking.totalPrice}</p>
+                                {/* Content Section */}
+                                <CardContent className="p-4 flex flex-col grow">
+                                    {/* Tour Name */}
+                                    <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-2 min-h-14" title={booking.tour?.name}>
+                                        {booking.tour?.name}
+                                    </h3>
+
+                                    {/* Location */}
+                                    {booking.tour?.location && (
+                                        <div className="flex items-center text-gray-600 text-sm mb-2">
+                                            <MapPin className="w-4 h-4 mr-1.5 shrink-0 text-indigo-500" />
+                                            <span className="truncate">{booking.tour.location}</span>
+                                        </div>
+                                    )}
+
+                                    {/* Booking Details */}
+                                    <div className="space-y-2 mb-4">
+                                        {/* Booking Date */}
+                                        <div className="flex items-center text-gray-600 text-xs">
+                                            <Calendar className="w-3.5 h-3.5 mr-1.5 text-gray-400" />
+                                            <span>Booked: {new Date(booking.bookingDate).toLocaleDateString(undefined, { dateStyle: 'medium' })}</span>
+                                        </div>
+
+                                        {/* Travelers */}
+                                        <div className="flex items-center text-gray-600 text-xs">
+                                            <Users className="w-3.5 h-3.5 mr-1.5 text-gray-400" />
+                                            <span>{booking.headCount} Travelers</span>
+                                        </div>
                                     </div>
 
-                                    <Button
-                                        variant="outline"
-                                        className="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 w-full sm:w-auto transition-colors"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleCancelBooking(booking._id);
-                                        }}
-                                    >
-                                        Cancel Booking
+                                    {/* Price and Cancel Button */}
+                                    <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between gap-2">
+                                        <div className="flex flex-col">
+                                            <span className="text-2xl font-bold text-indigo-600">₹{booking.totalPrice}</span>
+                                            <span className="text-xs text-gray-500">Total</span>
+                                        </div>
+                                        <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 px-4 shrink-0 font-semibold"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCancelBooking(booking._id);
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                        {bookings.length === 0 && (
+                            <div className="col-span-full">
+                                <div className="text-center py-16 bg-gray-50 rounded-xl">
+                                    <div className="w-20 h-20 bg-linear-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Calendar className="w-10 h-10 text-gray-400" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">No bookings yet</h3>
+                                    <p className="text-gray-600 mb-8">You haven't booked any tours yet. Start your adventure today!</p>
+                                    <Button onClick={() => navigate('/')} className="bg-indigo-600 hover:bg-indigo-700 px-8 py-3 text-lg">
+                                        Explore Tours
                                     </Button>
                                 </div>
                             </div>
+                        )}
                         </div>
-                    ))}
-                    {bookings.length === 0 && (
-                        <div className="col-span-full text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100">
-                            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Calendar className="w-8 h-8 text-gray-400" />
-                            </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-1">No bookings yet</h3>
-                            <p className="text-gray-500 mb-6">You haven't booked any tours yet. Start your adventure today!</p>
-                            <Button onClick={() => navigate('/')} className="bg-sky-600 hover:bg-sky-700">
-                                Explore Tours
-                            </Button>
-                        </div>
-                    )}
+                    </Card>
                 </div>
 
                 {/* Wishlist Section */}
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">My Wishlist</h2>
-                {validWishlist.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {validWishlist.map((tour: any) => (
-                            <TourCard key={tour._id} tour={tour} />
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-12 bg-white rounded-lg shadow border border-gray-100">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Heart className="w-8 h-8 text-gray-400" />
-                        </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-1">Your wishlist is empty</h3>
-                        <p className="text-gray-500 mb-6">Save tours you're interested in to view them later.</p>
-                        <Button onClick={() => navigate('/')} variant="outline">
-                            Browse Tours
-                        </Button>
-                    </div>
-                )}
+                <div>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">My Wishlist</h2>
+                    <Card className="bg-white/60 backdrop-blur-sm shadow-xl border-0 p-6">
+                        {validWishlist.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {validWishlist.map((tour: any) => (
+                                    <TourCard key={tour._id} tour={tour} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-16 bg-gray-50 rounded-xl">
+                                <div className="w-20 h-20 bg-linear-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <Heart className="w-10 h-10 text-gray-400" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2">Your wishlist is empty</h3>
+                                <p className="text-gray-600 mb-8">Save tours you're interested in to view them later.</p>
+                                <Button onClick={() => navigate('/')} variant="outline" className="px-8 py-3 text-lg border-indigo-300 text-indigo-600 hover:bg-indigo-50">
+                                    Browse Tours
+                                </Button>
+                            </div>
+                        )}
+                    </Card>
+                </div>
             </div>
             )}
         </div>

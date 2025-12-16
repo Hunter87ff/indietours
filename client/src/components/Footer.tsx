@@ -10,7 +10,7 @@ export default function Footer() {
                     <div>
                         <div className="flex items-center space-x-2 mb-4">
                             <Plane className="w-8 h-8 text-sky-400" />
-                            <span className="text-2xl font-bold">TravelHub</span>
+                            <span className="text-2xl font-bold">indietours</span>
                         </div>
                         <p className="text-gray-400">
                             Your trusted partner for unforgettable travel experiences around the world.
@@ -21,9 +21,9 @@ export default function Footer() {
                         <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
                         <ul className="space-y-2 text-gray-400">
                             <li><Link to="/about" className="hover:text-sky-400 transition-colors">About Us</Link></li>
-                            <li><a href="#" className="hover:text-sky-400 transition-colors">Destinations</a></li>
+                            <li><Link to="/tours" className="hover:text-sky-400 transition-colors">Destinations</Link></li>
                             <li><a href="#" className="hover:text-sky-400 transition-colors">Services</a></li>
-                            <li><a href="#" className="hover:text-sky-400 transition-colors">Contact</a></li>
+                            <li><Link to="/contact" className="hover:text-sky-400 transition-colors">Contact</Link></li>
                         </ul>
                     </div>
 
@@ -36,11 +36,11 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center">
                                 <Mail className="w-4 h-4 mr-2" />
-                                info@travelhub.com
+                                info@indietours.tech
                             </li>
                             <li className="flex items-center">
                                 <Globe className="w-4 h-4 mr-2" />
-                                www.travelhub.com
+                                www.indietours.tech
                             </li>
                         </ul>
                     </div>
@@ -67,7 +67,7 @@ export default function Footer() {
                 <Separator className="my-8 bg-gray-800" />
 
                 <div className="text-center text-gray-400">
-                    <p>&copy; 2024 TravelHub. All rights reserved.</p>
+                    <p>&copy; 2024 indietours. All rights reserved.</p>
                 </div>
             </div>
         </footer>
