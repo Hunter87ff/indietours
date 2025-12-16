@@ -102,13 +102,13 @@ export default function Home() {
         <div className="min-h-screen bg-white">
             {/* Hero Section */}
             <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-100 via-white to-blue-50" />
+                <div className="absolute inset-0 bg-linear-to-br from-sky-100 via-white to-blue-50" />
                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1920&h=1080&fit=crop')] bg-cover bg-center opacity-20" />
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 animate-fade-in">
                         Discover Your Next
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-blue-600"> Adventure</span>
+                        <span className="text-transparent bg-clip-text bg-linear-to-r from-sky-500 to-blue-600"> Adventure</span>
                     </h1>
                     <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
                         Explore breathtaking destinations around the world with our curated travel experiences
@@ -154,7 +154,7 @@ export default function Home() {
             </section>
 
             {/* Popular Destinations */}
-            <section id="destinations" className="py-20 bg-gradient-to-b from-white to-sky-50">
+            <section id="destinations" className="py-20 bg-linear-to-b from-white to-sky-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -239,7 +239,7 @@ export default function Home() {
             </section>
 
             {/* Testimonials Section */}
-            <section id="testimonials" className="py-20 bg-gradient-to-b from-white to-sky-50">
+            <section id="testimonials" className="py-20 bg-linear-to-b from-white to-sky-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold text-gray-900 mb-4">What Our Travelers Say</h2>
@@ -275,7 +275,7 @@ export default function Home() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-sky-500 to-blue-600">
+            <section className="py-20 bg-linear-to-r from-sky-500 to-blue-600">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-4xl font-bold text-white mb-6">
                         Ready for Your Next Adventure?
