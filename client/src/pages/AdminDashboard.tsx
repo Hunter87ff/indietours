@@ -268,7 +268,7 @@ export default function AdminDashboard() {
                                         <td className="px-6 py-4 whitespace-nowrap">{booking.user?.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{booking.tour?.name}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{booking.headCount}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">${booking.totalPrice}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">₹{booking.totalPrice}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">{new Date(booking.bookingDate).toLocaleDateString()}</td>
                                     </tr>
                                 ))}
