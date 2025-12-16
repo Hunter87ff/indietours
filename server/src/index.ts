@@ -88,6 +88,6 @@ app.use((err: Error, req: Request, res: Response) => {
 
 
 app.listen(config.app.port, () => {
-    logger.info(`🚀 Server is running on http://localhost:${config.app.port}`);
-    logger.info(`📝 API documentation available at http://localhost:${config.app.port}/api`);
+    logger.info(`🚀 Server is running on ${config.app.endpoint}`);
+    logger.info(`📝 API documentation available at ${config.app.endpoint}/api`);
 });
