@@ -33,7 +33,13 @@ connectDB().then(async () => {
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors(
+    {
+        origin: config.app.client,
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+    }
+));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
