@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import config from '@/config';
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/User';
 
@@ -18,10 +19,14 @@ export const protect = async (req: AuthRequest, res: Response, next: NextFunctio
             token = req.headers.authorization.split(' ')[1];
 
             // Verify token
-            const decoded: any = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+            const decoded: any = jwt.verify(token, config.app.jwtSecret);
 
             // Get user from the token
             req.user = await User.findById(decoded.id).select('-password');
+
+            if (!req.user) {
+                return res.status(401).json({ message: 'Not authorized' });
+            }
 
             next();
         } catch (error) {

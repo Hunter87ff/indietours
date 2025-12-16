@@ -5,7 +5,9 @@ import config from '@/config';
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(config.app.mongodbUri);
+        const conn = await mongoose.connect(config.app.mongodbUri, {
+            dbName : "indietours"
+        });
         logger.info(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error: any) {
         logger.error(`Error: ${error.message}`);

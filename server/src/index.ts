@@ -12,7 +12,6 @@ import bookingRoutes from './routes/bookingRoutes';
 import commentRoutes from './routes/commentRoutes';
 
 
-
 connectDB().then(async () => {
     try {
         const User = (await import('./models/User')).default;
@@ -21,7 +20,7 @@ connectDB().then(async () => {
             await User.create({
                 name: 'admin',
                 email: 'admin@admin.com',
-                password: 'admin',
+                password: 'admin123',
                 role: 'admin'
             });
             logger.info('Default admin account created: admin@admin.com / admin');

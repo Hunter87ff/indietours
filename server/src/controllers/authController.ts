@@ -14,7 +14,7 @@ const generateToken = (id: string) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const register = async (req: Request, res: Response) => {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     try {
         // Check if user exists
@@ -29,7 +29,7 @@ export const register = async (req: Request, res: Response) => {
             name,
             email,
             password,
-            role: role || 'user', // Default to user if not specified, but allow admin creation for prototype
+            role: 'user', // Default to user if not specified, but allow admin creation for prototype
         });
 
         if (user) {
@@ -82,6 +82,7 @@ export const getMe = async (req: any, res: Response) => {
         const user = await User.findById(req.user.id).populate('wishlist');
         res.status(200).json(user);
     } catch (error: any) {
+        console.log(error);
         res.status(500).json({ message: error.message });
     }
 };
