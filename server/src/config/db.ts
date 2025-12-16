@@ -1,11 +1,14 @@
 import mongoose from 'mongoose';
+import { logger } from '@/ext/logger';
+import config from '@/config';
+
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/travel-booking');
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
+        const conn = await mongoose.connect(config.app.mongodbUri);
+        logger.info(`MongoDB Connected: ${conn.connection.host}`);
     } catch (error: any) {
-        console.error(`Error: ${error.message}`);
+        logger.error(`Error: ${error.message}`);
         process.exit(1);
     }
 };

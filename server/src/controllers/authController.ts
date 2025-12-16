@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
+import config from '@/config';
 import jwt from 'jsonwebtoken';
 import User from '../models/User';
 
 // Generate JWT
 const generateToken = (id: string) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', {
+    return jwt.sign({ id }, config.app.jwtSecret, {
         expiresIn: '30d',
     });
 };

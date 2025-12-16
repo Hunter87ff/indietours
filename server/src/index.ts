@@ -1,13 +1,17 @@
+import 'dotenv/config';
+require('module-alias/register'); // Ensure module aliases are registered for Node.js
+import 'tsconfig-paths/register' // Ensure module aliases and paths are registered for TypeScript
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import config from './config';
+import { logger } from "./ext/logger";
 import connectDB from './config/db';
 import authRoutes from './routes/authRoutes';
 import tourRoutes from './routes/tourRoutes';
 import bookingRoutes from './routes/bookingRoutes';
 import commentRoutes from './routes/commentRoutes';
 
-dotenv.config();
+
 
 connectDB().then(async () => {
     try {
@@ -20,15 +24,14 @@ connectDB().then(async () => {
                 password: 'admin',
                 role: 'admin'
             });
-            console.log('Default admin account created: admin@admin.com / admin');
+            logger.info('Default admin account created: admin@admin.com / admin');
         }
     } catch (error) {
-        console.error('Error creating default admin:', error);
+        logger.error('Error creating default admin:', error);
     }
 });
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -84,7 +87,8 @@ app.use((err: Error, req: Request, res: Response) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    console.log(`📝 API documentation available at http://localhost:${PORT}/api`);
+
+app.listen(config.app.port, () => {
+    logger.info(`🚀 Server is running on http://localhost:${config.app.port}`);
+    logger.info(`📝 API documentation available at http://localhost:${config.app.port}/api`);
 });

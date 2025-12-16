@@ -1,1 +1,1 @@
-export const BACKEND_ENDPOINT = import.meta.env.VITE_BACKEND_ENDPOINT || 'http://localhost:5000'
+export const BACKEND_ENDPOINT = import.meta.env.VITE_BACKEND_ENDPOINT || 'http://localhost:8000'
