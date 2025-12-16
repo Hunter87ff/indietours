@@ -9,6 +9,7 @@ import TourDetails from './pages/TourDetails'
 import Profile from './pages/Profile'
 import AdminDashboard from './pages/AdminDashboard'
 import AboutUs from './pages/AboutUs'
+import ContactUs from './pages/ContactUs'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 
@@ -23,6 +24,7 @@ export default function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/tours" element={<AllTours />} />
                             <Route path="/about" element={<AboutUs />} />
+                            <Route path="/contact" element={<ContactUs />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/tours/:id" element={<TourDetails />} />

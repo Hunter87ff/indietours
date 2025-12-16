@@ -43,6 +43,9 @@ export default function Navigation() {
                     <Link to="/about" className="text-gray-700 hover:text-sky-500 transition-colors">
                         About Us
                     </Link>
+                    <Link to="/contact" className="text-gray-700 hover:text-sky-500 transition-colors">
+                        Contact Us
+                    </Link>
                     {user ? (
                         <>
                             {user.role === 'admin' && (
@@ -99,6 +102,9 @@ export default function Navigation() {
                     </Link>
                     <Link to="/about" className="block py-2 text-gray-700 hover:text-sky-500 transition-colors">
                         About Us
+                    </Link>
+                    <Link to="/contact" className="block py-2 text-gray-700 hover:text-sky-500 transition-colors">
+                        Contact Us
                     </Link>
                     {user ? (
                         <>
