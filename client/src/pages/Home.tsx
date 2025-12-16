@@ -78,7 +78,7 @@ export default function Home() {
             location: 'Kolkata, West Bengal',
             content: 'Amazing experience! The tour was well-organized and our guide was incredibly knowledgeable. Would definitely book again!',
             rating: 5,
-            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop'
+            avatar: 'https://plus.unsplash.com/premium_photo-1689870830524-e1aa1bcee383?w=100&h=100&fit=crop'
         },
         {
             id: 2,
