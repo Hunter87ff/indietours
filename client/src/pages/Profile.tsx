@@ -12,6 +12,7 @@ export default function Profile() {
     const { user, login } = useAuth();
     const navigate = useNavigate();
     const [isEditing, setIsEditing] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [editForm, setEditForm] = useState({
         name: '',
         email: '',
@@ -20,13 +21,8 @@ export default function Profile() {
 
     useEffect(() => {
         if (user) {
-            fetchMyBookings();
             fetchUserProfile();
-            setEditForm({
-                name: user.name || '',
-                email: user.email || '',
-                password: ''
-            });
+            
         }
     }, [user?.token]); // Only re-run if token changes to avoid infinite loop with user update
 
@@ -42,7 +38,18 @@ export default function Profile() {
                 // Merge the new user data (with populated wishlist) with the existing token
                 login({ ...data, token: user?.token });
             }
+
+            fetchMyBookings();
+            setEditForm({
+                name: user?.name || '',
+                email: user?.email || '',
+                password: ''
+            });
+
+            setIsLoading(false);
+
         } catch (error) {
+            window.location.href = '/login';
             console.error('Error fetching profile:', error);
         }
     };
@@ -115,6 +122,7 @@ export default function Profile() {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            {isLoading ? <h3>Loading...</h3> : (
             <div className="max-w-7xl mx-auto">
                 {/* Profile Section */}
                 <div className="bg-white shadow rounded-lg p-6 mb-8">
@@ -212,7 +220,7 @@ export default function Profile() {
                                     alt={booking.tour?.name}
                                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:hidden" />
+                                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent sm:hidden" />
                                 <div className="absolute bottom-3 left-3 text-white sm:hidden">
                                     <p className="font-bold text-lg">₹{booking.totalPrice}</p>
                                 </div>
@@ -225,7 +233,7 @@ export default function Profile() {
                                         <h3 className="text-xl font-bold text-gray-900 line-clamp-1 group-hover:text-sky-600 transition-colors" title={booking.tour?.name}>
                                             {booking.tour?.name}
                                         </h3>
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 flex-shrink-0 ml-2">
+                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 shrink-0 ml-2">
                                             Confirmed
                                         </span>
                                     </div>
@@ -303,6 +311,7 @@ export default function Profile() {
                     </div>
                 )}
             </div>
+            )}
         </div>
     );
 }

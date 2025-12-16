@@ -319,7 +319,7 @@ export default function TourDetails() {
                                                 className="group flex gap-4 bg-white p-3 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-100"
                                                 onClick={() => navigate(`/tours/${related._id}`)}
                                             >
-                                                <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg">
+                                                <div className="w-20 h-20 overflow-hidden rounded-lg">
                                                     <img
                                                         src={related.imageUrl || 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&h=300&fit=crop'}
                                                         alt={related.name}
