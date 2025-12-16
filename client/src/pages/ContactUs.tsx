@@ -83,7 +83,7 @@ export default function ContactUs() {
                                     </div>
                                     <div>
                                         <p className="font-semibold text-gray-900">Email</p>
-                                        <p className="text-gray-600">contact@travelbooking.com</p>
+                                        <p className="text-gray-600">contact@indietours.tech</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center">
@@ -94,7 +94,7 @@ export default function ContactUs() {
                                     </div>
                                     <div>
                                         <p className="font-semibold text-gray-900">Phone</p>
-                                        <p className="text-gray-600">+1 (555) 123-4567</p>
+                                        <p className="text-gray-600">+91 8787878787</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center">
@@ -106,7 +106,7 @@ export default function ContactUs() {
                                     </div>
                                     <div>
                                         <p className="font-semibold text-gray-900">Address</p>
-                                        <p className="text-gray-600">123 Travel Street, Adventure City, AC 12345</p>
+                                        <p className="text-gray-600">College Street, Kolkata-700009, West Bengal</p>
                                     </div>
                                 </div>
                             </div>

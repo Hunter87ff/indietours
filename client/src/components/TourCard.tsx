@@ -133,7 +133,7 @@ export default function TourCard({ tour }: TourCardProps) {
                     </div>
                     <Button
                         size="sm"
-                        className="bg-sky-500 hover:bg-sky-600 text-white px-6 flex-shrink-0 font-semibold"
+                        className="bg-sky-500 hover:bg-sky-600 text-white px-6 shrink-0 font-semibold"
                         disabled={tour.spotsLeft === 0}
                     >
                         {tour.spotsLeft === 0 ? 'Sold Out' : 'Book Now'}

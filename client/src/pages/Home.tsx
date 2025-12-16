@@ -74,27 +74,27 @@ export default function Home() {
     const testimonials = [
         {
             id: 1,
-            name: 'Sarah Johnson',
-            location: 'New York, USA',
+            name: 'Bappa Das',
+            location: 'Kolkata, West Bengal',
             content: 'Amazing experience! The tour was well-organized and our guide was incredibly knowledgeable. Would definitely book again!',
             rating: 5,
             avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop'
         },
         {
             id: 2,
-            name: 'Michael Chen',
-            location: 'Singapore',
+            name: 'Sudip Barman',
+            location: 'Haryana, India',
             content: 'Best vacation ever! Everything from accommodation to activities was perfect. Highly recommend this service.',
             rating: 5,
             avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
         },
         {
             id: 3,
-            name: 'Emma Wilson',
-            location: 'London, UK',
+            name: 'Sneha Sautia',
+            location: 'Kolkata, West Bengal',
             content: 'Incredible destinations and seamless booking process. The customer service was outstanding throughout our trip.',
             rating: 5,
-            avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop'
+            avatar: 'https://images.unsplash.com/photo-1729101143873-d80050bae219?w=100&h=100&fit=crop'
         }
     ];
 
