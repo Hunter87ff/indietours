@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
-const bookingSchema = new mongoose.Schema({
+export interface BookingDocument extends mongoose.Document {
+    user: mongoose.Types.ObjectId;
+    tour: mongoose.Types.ObjectId;
+    headCount: number;
+    totalPrice: number;
+    bookingDate: Date;
+}
+
+
+
+const bookingSchema = new mongoose.Schema<BookingDocument>({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -25,5 +35,5 @@ const bookingSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
-
-export default mongoose.model('Booking', bookingSchema);
+const Booking = mongoose.model<BookingDocument>('Booking', bookingSchema);
+export default Booking;

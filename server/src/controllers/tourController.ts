@@ -1,13 +1,28 @@
 import { Request, Response } from 'express';
-import Tour from '../models/Tour';
+import Tour, {tourCache} from '../models/Tour';
 import Booking from '../models/Booking';
 import Comment from '../models/Comment';
+
+
+const cache = {
+    allTours : {
+        data : [] as any[],
+        expAt : null as number | null
+    },
+}
+
 
 // @desc    Get all tours
 // @route   GET /api/tours
 // @access  Public
 export const getTours = async (req: Request, res: Response) => {
     try {
+
+        if(cache.allTours.expAt && cache.allTours.expAt > Date.now()) {
+            return res.status(200).json(cache.allTours.data);
+        }
+
+
         const tours = await Tour.find();
 
         // Add rating info to each tour
@@ -33,21 +48,32 @@ export const getTours = async (req: Request, res: Response) => {
         }));
 
         res.status(200).json(toursWithRatings);
+
+        // Update cache
+        cache.allTours.data = toursWithRatings;
+        cache.allTours.expAt = Date.now() + 10 * 60 * 1000; // Cache for 10 minutes
+
+
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // @desc    Get single tour
 // @route   GET /api/tours/:id
 // @access  Public
 export const getTour = async (req: Request, res: Response) => {
     try {
-        const tour = await Tour.findById(req.params.id);
+        const tour = tourCache.has(String(req.params.id)) ? tourCache.get(String(req.params.id)) : await Tour.findById(req.params.id);
 
         if (!tour) {
             return res.status(404).json({ message: 'Tour not found' });
         }
+
+        // update cache
+        tourCache.set(String(tour._id), tour);
 
         // Add rating info
         const comments = await Comment.find({ tour: tour._id });

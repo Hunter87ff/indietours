@@ -1,6 +1,22 @@
 import mongoose from 'mongoose';
+import cache from '@/ext/cache';
 
-const tourSchema = new mongoose.Schema({
+
+export interface TourDocument extends mongoose.Document {
+    name: string;
+    description: string;
+    price: number;
+    location: string;
+    imageUrl: string;
+    startDate: Date;
+    maxCapacity: number;
+    createdAt: Date;
+}
+
+
+
+
+const tourSchema = new mongoose.Schema<TourDocument>({
     name: {
         type: String,
         required: [true, 'Please add a tour name'],
@@ -48,6 +64,13 @@ tourSchema.virtual('comments', {
     localField: '_id',
     foreignField: 'tour',
     justOne: false
+});
+
+export const tourCache = new Map<string, TourDocument>();
+
+
+tourSchema.post('save', async function () {
+    tourCache.set(String(this._id), this);
 });
 
 export default mongoose.model('Tour', tourSchema);

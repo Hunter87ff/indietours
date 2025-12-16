@@ -1,7 +1,19 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const userSchema = new mongoose.Schema({
+export interface UserDocument extends mongoose.Document {
+    name: string;
+    email: string;
+    password: string;
+    role: 'user' | 'admin';
+    createdAt: Date;
+    wishlist: mongoose.Types.ObjectId[];
+    matchPassword(enteredPassword: string): Promise<boolean>;
+}
+
+
+
+const userSchema = new mongoose.Schema<UserDocument>({
     name: {
         type: String,
         required: [true, 'Please add a name'],

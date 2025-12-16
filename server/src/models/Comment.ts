@@ -1,6 +1,16 @@
 import mongoose from 'mongoose';
 
-const commentSchema = new mongoose.Schema({
+
+export interface CommentDocument extends mongoose.Document {
+    user: mongoose.Schema.Types.ObjectId;
+    tour: mongoose.Schema.Types.ObjectId;
+    text: string;
+    rating: number;
+    createdAt: Date;
+}
+
+
+const commentSchema = new mongoose.Schema<CommentDocument>({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
